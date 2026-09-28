@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+*.log
+haters/
+.idea/
+# Ignore JavaScript30 finished reference files
+*-FINISHED.*
