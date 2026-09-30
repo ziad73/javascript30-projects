@@ -23,6 +23,27 @@
 
   <style>
 
+    /* css variables
+      set a var: --varName
+      access a var in css: var(--varName)
+      access a var in js: document.documentElement.style.getPropertyValue('--varName')
+    */
+
+    :root{ /*global, highest level*/
+      --base:yellow;
+      --spacing: 10px;
+      --blur: 10px;
+    } /*dynamicaly managed by js*/
+
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+    .hl{ 
+      color: var(--base);
+    }
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -46,6 +67,28 @@
   </style>
 
   <script>
+    // customize the css variables based on the user input
+    
+    const inputs = document.querySelectorAll('.controls input');// all inputs
+
+    function handleUpdate(){// this = event object
+      // console.log(this.name);// blur, spacing, base
+      // console.log(this.value);// 10, 10, #ffc600
+
+      // suffix user input e.g, 10 to px: 10px
+      const suffix = this.dataset.sizing || '';
+
+      // assign user input to css variable
+      this.style.setProperty(`--${this.name}`, this.value + suffix);// setProperty(varName, value)
+
+      // console.log(this.value + suffix);
+    }
+
+    // event listener
+    for(let input of inputs){
+      input.addEventListener('change', handleUpdate);
+      input.addEventListener('mousemove', handleUpdate);
+    }
   </script>
 
 </body>
