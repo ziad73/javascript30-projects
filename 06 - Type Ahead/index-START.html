@@ -15,9 +15,63 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+<script type="module">
+async function fetchData(endpoint) {
+  const data = await fetch(endpoint);
+  const jsonData = await data.json();
+  return jsonData;
+}
 
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+const cities = await fetchData(endpoint);// promise result
+
+// for(let city of cities) {
+//   console.log(city.city);
+// }
+
+// search by city or state
+function findMatches(wordToMatch, cities) {
+  const regex = new RegExp(wordToMatch, 'gi');// gi flags: g = global, i = case insensitive
+  return cities.filter(place => place.city.match(regex) || place.state.match(regex));
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// display matches
+function displayMatches() { // this = e
+  // console.log(this.value);
+  const input = this.value;
+  const matchesArray = findMatches(input, cities);
+  // console.log(matches);
+  const html = matchesArray.map(place => {
+    // highlight matches
+    const regex = new RegExp(input, 'gi');
+    // replace matched string with highlighted strings
+    const cityName = place.city.replace(regex, `<span class="hl">${input}</span>`);
+    const stateName = place.state.replace(regex, `<span class="hl">${input}</span>`);
+    return `
+      <li>
+        <span class="name">${cityName}, ${stateName}</span>
+        <span class="population">${numberWithCommas(place.population)}</span>
+      </li>
+    `;
+  }).join('');// join array into string with delimiter '' (no space)
+  suggestions.innerHTML = html;
+  // console.log(html);// huge html string
+}
+
+// select input and show results
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+
+// displayMatches not a function, just a reference to the function
+searchInput.addEventListener('change', displayMatches);
+searchInput.addEventListener('keyup', displayMatches);
+
+
+// select 
 </script>
 </body>
 </html>
