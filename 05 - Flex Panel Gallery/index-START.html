@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Flex Panels 💪</title>
   <link href='https://fonts.googleapis.com/css?family=Amatic+SC' rel='stylesheet' type='text/css'>
-  <link rel="icon" href="https://fav.farm/🔥" />
+  <link rel="icon" href="https://fav.farm/✅" />
 </head>
 <body>
   <style>
@@ -27,6 +27,7 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+      display: flex;
     }
 
     .panel {
@@ -44,6 +45,10 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+      flex: 1;/*pic evenly distributed*/
+      justify-content: center;
+      display: flex;
+      flex-direction: column;/*horizontally centered*/
     }
 
     .panel1 { background-image: url(https://images.unsplash.com/photo-1443891238287-325a8fddd0f7?w=1500&h=1500); }
@@ -52,12 +57,21 @@
     .panel4 { background-image: url(https://images.unsplash.com/photo-1442522772768-9032b6d10e3e?w=1500&h=1500); }
     .panel5 { background-image: url(https://images.unsplash.com/photo-1465156799763-2c087c332922?w=1500&h=1500); }
 
-    /* Flex Children */
+    /* Flex Items */
     .panel > * {
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+    /*words in the panel*/
+    .panel > *:first-child { transform: translateY(-100%); }/* zoom out*/
+    .panel.open-active > *:first-child { transform: translateY(0); } /* zoom in */
+    .panel > *:last-child { transform: translateY(100%); }
+    .panel.open-active > *:last-child { transform: translateY(0); }
 
     .panel p {
       text-transform: uppercase;
@@ -71,9 +85,16 @@
     }
 
     .panel.open {
-      font-size: 40px;
+      /*grow panel size vertically by 5*/
+      flex: 5;  /*flex-grow*/
+      font-size: 40px; /*text size at open*/
     }
 
+    @media only screen and (max-width: 600px) {
+      .panel p {
+        font-size: 1em;
+      }
+    }
   </style>
 
 
@@ -106,10 +127,27 @@
   </div>
 
   <script>
+    // on click on a panel: toggle open + open-active classes
+    // flex is something cool, check it out!
 
+    // select all panels
+    const panels = document.querySelectorAll('.panel');
+    // toggle open class
+    for(let panel of panels) {
+      panel.addEventListener('click', () => {
+        // console.log(panel);
+        panel.classList.toggle('open');// toggle .open class to the clicked panel
+      });
+    }
+    // toggle open-active class IFF panel was open
+    for(let panel of panels) {
+      panel.addEventListener('transitionend', (e) => {
+        // if the transition is flex-grow (.open class is present), then toggle open-active class
+        if(e.propertyName.includes('flex-grow') && panel.classList.contains('open'))
+          panel.classList.toggle('open-active');
+      });
+    }
   </script>
-
-
 
 </body>
 </html>
