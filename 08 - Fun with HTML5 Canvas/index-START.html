@@ -8,8 +8,68 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
-</script>
+// select the canvas element
+const canvas = document.querySelector('#draw');
+// get the 2D drawing context
+const ctx = canvas.getContext('2d');
 
+// canvas configs
+canvas.width = 800;
+canvas.height = 800;
+
+// context configs: play as you wish with flags
+// size of the brush
+ctx.lineWidth = 10;
+// color of the brush
+// ctx.strokeStyle = 'purple';
+// rounded corners for lines
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+
+let isDrawing = false;
+// endpoint of the line
+let lastX = 0;
+let lastY = 0;
+let hue = 0;// mother-effering effect
+
+function draw(e) {
+  if (!isDrawing) return;// stop the fn when not mousedown
+  // console.log(e);
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;// rainbow color
+
+  // start from
+  ctx.beginPath();// tapping the mouse
+  // go to
+  ctx.moveTo(lastX, lastY);
+  // draw line
+  ctx.lineTo(e.offsetX, e.offsetY);
+  
+  // stroke the line
+  ctx.stroke();
+
+  // update lastX and lastY
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  hue++;// increment the color
+  hue = (hue > 360) ? 0 : hue;// reset hue
+
+  // you can play with the lineWidth as well
+
+}
+// event listeners
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  // lastX = e.offsetX;
+  // lastY = e.offsetY;
+  [lastX, lastY] = [e.offsetX, e.offsetY];// setting start point
+});
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);// out the board
+
+</script>
+  
 <style>
   html, body {
     margin: 0;
